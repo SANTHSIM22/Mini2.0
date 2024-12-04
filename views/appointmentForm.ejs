@@ -1,35 +1,155 @@
-<!-- appointmentForm.ejs -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Appointment Form</title>
+  <style>
+    /* Reset and body styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #ff7e5f, #feb47b);
+      color: #333;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* Form container */
+    form {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+      text-align: left;
+      box-sizing: border-box;
+    }
+
+    /* Form heading */
+    form h1 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #ff7e5f;
+    }
+
+    /* Labels and inputs */
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    textarea {
+      resize: none;
+      height: 100px;
+    }
+
+    /* Submit button */
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      color: #fff;
+      background-color: #ff7e5f;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #e0624b;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+      form {
+        padding: 15px;
+      }
+      form h1 {
+        font-size: 1.5rem;
+      }
+      label {
+        font-size: 0.9rem;
+      }
+      input, textarea {
+        font-size: 0.9rem;
+      }
+      button {
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 5px;
+      }
+      form {
+        padding: 10px;
+      }
+      form h1 {
+        font-size: 1.3rem;
+      }
+      label {
+        font-size: 0.8rem;
+      }
+      input, textarea {
+        font-size: 0.8rem;
+      }
+      button {
+        font-size: 0.8rem;
+        padding: 10px;
+      }
+    }
+  </style>
 </head>
 <body>
-
-
   <form action="/worker/appointment/<%= worker._id %>" method="POST">
     <h1>Book an Appointment for <%= worker.name %></h1>
     <label for="name">Name:</label>
-    <input type="text" name="name" required><br>
+    <input type="text" name="name" required>
+
     <label for="address">Address:</label>
-    <input type="text" name="address" required><br>
+    <input type="text" name="address" required>
 
     <label for="date">Date:</label>
-    <input type="date" name="date" required><br>
+    <input type="date" name="date" required>
 
     <label for="appointmentTime">Appointment Time:</label>
-    <input type="time" name="appointmentTime" required><br>
+    <input type="time" name="appointmentTime" required>
 
     <label for="phoneNumber">Phone Number:</label>
-    <input type="text" name="phoneNumber" required><br>
+    <input type="text" name="phoneNumber" required>
 
     <label for="message">Message:</label>
-    <textarea name="message"></textarea><br>
+    <textarea name="message"></textarea>
 
     <label for="email">Email:</label>
-    <input type="email" name="email" required><br>
+    <input type="email" name="email" required>
 
     <button type="submit">Submit</button>
   </form>

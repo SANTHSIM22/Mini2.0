@@ -5,7 +5,6 @@ const userAuthRoutes = require('./routes/userAuth'); // User authentication rout
 const workerAuthRoutes = require('./routes/workerAuth'); // Worker authentication routes
 const path = require('path');
 const session = require('express-session'); // Required for session management
-
 const app = express();
 
 // Middleware
@@ -18,7 +17,7 @@ app.use(session({
   saveUninitialized: true,   // Save uninitialized sessions
   cookie: { secure: false }  // Set to true in production when using HTTPS
 }));
-
+app.use(express.static(path.join(__dirname, 'public')));
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB Connected'))
@@ -26,7 +25,9 @@ mongoose.connect(process.env.MONGO_URI)
 
 // Set the view engine to EJS
 app.set('view engine', 'ejs');
-
+// Assuming your 'first.css' is inside 'public/css/'
+app.use('/css', express.static(path.join(__dirname, 'css')));
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 // Routes
 app.use('/user', userAuthRoutes); // User authentication routes
 app.use('/worker', workerAuthRoutes); // Worker authentication routes

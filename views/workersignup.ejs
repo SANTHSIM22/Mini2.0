@@ -4,14 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Worker Signup</title>
+  <link rel="stylesheet" href="/css/workerSignup.css"> <!-- Ensure correct path -->
 </head>
 <body>
   <h1>Worker Signup</h1>
   <form action="/worker/signup" method="POST">
-    <input type="text" name="username" placeholder="Username" required>
+    <input type="text" name="username" placeholder="Username" required >
     <input type="email" name="email" placeholder="Email" required>
     <input type="password" name="password" placeholder="Password" required>
     <button type="submit">Sign Up</button>
+    
+  <p class="first_time">Already have an account? <a href="/worker/login">Login</a></p>
   </form>
+
 </body>
 </html>

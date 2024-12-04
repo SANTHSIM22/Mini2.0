@@ -3,40 +3,127 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Explore Categories: <%= categoryName %></title> <!-- This will now correctly display the category name -->
+  <title>Explore Categories: <%= categoryName %></title>
   <style>
-    .category-cards {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
+    /* Reset and body styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    .card {
-      width: 200px;
-      border: 1px solid #ddd;
-      padding: 10px;
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #ff7e5f, #feb47b);
+      color: #333;
+      padding: 20px;
+    }
+
+    /* Heading styles */
+    h1 {
       text-align: center;
-      border-radius: 10px;
+      color: white;
+      margin-bottom: 30px;
+      font-size: 2rem;
     }
+
+    /* Card container styles */
+    .category-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Individual card styles */
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
     .card-img-top {
       width: 100%;
-      height: auto;
-      border-radius: 10px;
+      height: 400px;
+      object-fit: contain;
     }
+
     .card-body {
-      padding: 10px;
+      padding: 15px;
     }
+
     .card-title {
-      font-size: 18px;
-      font-weight: bold;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: #ff7e5f;
     }
+
     .card-text {
-      font-size: 14px;
+      font-size: 1rem;
+      margin-bottom: 10px;
       color: gray;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      font-size: 1rem;
+      color: #fff;
+      background-color: #ff7e5f;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #e0624b;
+    }
+
+    /* No workers found message */
+    .no-workers {
+      text-align: center;
+      font-size: 1.2rem;
+      color: white;
+      margin-top: 50px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      .card-title {
+        font-size: 1.2rem;
+      }
+
+      .btn {
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .card-text {
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Explore Categories: <%= categoryName %></h1> <!-- Display the category name here -->
+  <h1>Explore Categories: <%= categoryName %></h1>
 
   <div class="category-cards">
     <% if (workersInCategory.length > 0) { %>
@@ -46,14 +133,12 @@
           <div class="card-body">
             <h5 class="card-title"><%= worker.name %></h5>
             <p class="card-text"><%= worker.title %></p>
-            <p><%= worker.category %></p>
-            <a href="/worker/appointment/<%= worker._id %>" class="btn btn-primary">View Details</a>
-
+            <a href="/worker/appointment/<%= worker._id %>" class="btn">Book</a>
           </div>
         </div>
       <% }); %>
     <% } else { %>
-      <p>No workers found in this category.</p>
+      <p class="no-workers">No workers found in this category.</p>
     <% } %>
   </div>
 </body>

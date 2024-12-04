@@ -151,12 +151,13 @@ router.get('/appointment/:workerId', async (req, res) => {
 
 // Inside workerAuth.js (or the file where you handle appointment creation)
 router.post('/appointment/:workerId', async (req, res) => {
-    const { workerId } = req.params;
+    const { workerId,workerName } = req.params;
     const { address, date, appointmentTime, phoneNumber, message, email, name } = req.body;
   
     // Log the appointment data before saving it
     console.log('Saving new appointment:', {
       workerId,
+      workerName,
       name,
       address,
       date,
@@ -167,8 +168,13 @@ router.post('/appointment/:workerId', async (req, res) => {
     });
   
     try {
+        const worker = await WorkerDetails.findById(workerId); 
+        if (!worker) {
+            return res.status(404).send('Worker not found');
+          }
       const newAppointment = new Appointment({
         workerId: workerId, // Ensure workerId is passed as ObjectId
+        workerName: worker.name, 
         name,
         address,
         date,

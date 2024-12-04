@@ -4,18 +4,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Worker Dashboard</title>
+  <link rel="stylesheet" href="/css/workerDashboard.css">
 </head>
 <body>
   <h1>Welcome, <%= username %>!</h1>
   <h2>Your Service Categories</h2>
-  
+
   <!-- List of Categories to Explore -->
   <div class="category-links">
-    <a href="/worker/explore/Beauty%20Parlor">Beauty Parlor</a>
-    <a href="/worker/explore/AC">AC</a>
-    <a href="/worker/explore/Cleaning">Cleaning</a>
-    <a href="/worker/explore/Men%20Salon">Men Salon</a>
+    <a href="/worker/explore/Beauty%20Parlor" class="category-card">
+      <img src="/assets/beauty.jpg" alt="Beauty Parlor" class="category-img">
+      <div class="category-title">Beauty Parlor</div>
+    </a>
+    <a href="/worker/explore/AC" class="category-card">
+      <img src="/assets/acac.webp" alt="AC" class="category-img">
+      <div class="category-title">AC</div>
+    </a>
+    <a href="/worker/explore/Cleaning" class="category-card">
+      <img src="/assets/clean.webp" alt="Cleaning" class="category-img">
+      <div class="category-title">Cleaning</div>
+    </a>
+    <a href="/worker/explore/Men%20Salon" class="category-card">
+        <img src="/assets/men.jpg" alt="Men Salon" class="category-img">
+      <div class="category-title">Men Salon</div>
+    </a>
   </div>
 
-
 </body>
+</html>
