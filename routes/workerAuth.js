@@ -3,9 +3,10 @@ const bcrypt = require('bcrypt');
 const multer = require('multer');
 const path = require('path');
 const Worker = require('../models/Worker');
-const WorkerDetails = require('../models/WorkerDetails'); // Ensure you have a model for worker details
-
+const WorkerDetails = require('../models/WorkerDetails');
+const Appointment = require('../models/Appointment');
 const router = express.Router();
+const mongoose = require('mongoose');
 
 // Multer setup for file uploads
 const storage = multer.diskStorage({
@@ -18,6 +19,15 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+
+// Middleware to check if the worker is logged in
+function isAuthenticated(req, res, next) {
+  if (req.session && req.session.workerId) {
+    return next();
+  } else {
+    res.redirect('/worker/login'); // Redirect to login if not authenticated
+  }
+}
 
 // Render worker signup form
 router.get('/signup', (req, res) => {
@@ -63,20 +73,24 @@ router.post('/login', async (req, res) => {
     res.status(400).send('Error logging in worker: ' + error.message);
   }
 });
-
-// Middleware to check if the worker is logged in
-function isAuthenticated(req, res, next) {
-  if (req.session && req.session.workerId) {
-    return next();
-  } else {
-    res.redirect('/worker/login'); // Redirect to login if not authenticated
-  }
-}
-
-// Render Worker Details Dashboard (protected route)
-router.get('/details', isAuthenticated, (req, res) => {
-  res.render('workerDetailsForm'); // Ensure this file exists in the 'views/' folder
-});
+router.get('/details', isAuthenticated, async (req, res) => {
+    const workerId = req.session.workerId; // Get worker ID from session
+    
+    try {
+      // Fetch all appointments and include the workerId, along with appointment details
+      const appointments = await Appointment.find().populate('workerId').exec(); // Populate workerId to get worker details too
+      
+      console.log('Appointments with worker details:', appointments); // Debug log to check the appointments
+  
+      // Render the worker details form and pass both appointments and workerId
+      res.render('workerDetailsForm', { appointments });
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+      res.status(500).send('Error fetching appointments');
+    }
+  });
+  
+  
 
 // Handle Worker Details Submission
 router.post('/details', isAuthenticated, upload.single('image'), async (req, res) => {
@@ -99,21 +113,112 @@ router.post('/details', isAuthenticated, upload.single('image'), async (req, res
     res.status(400).send('Error saving worker details: ' + error.message);
   }
 });
+
 // Render explore page by category
 router.get('/explore/:categoryName', async (req, res) => {
-    const { categoryName } = req.params; // Get the category name from URL parameter
+  const { categoryName } = req.params; // Get the category name from URL parameter
+
+  try {
+    // Query the database to get workers with the matching category
+    const workersInCategory = await WorkerDetails.find({ category: categoryName });
+
+    // Render the explore categories page and pass the filtered workers and category name
+    res.render('exploreCategories', { categoryName, workersInCategory });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error retrieving workers for this category');
+  }
+});
+
+// Render the appointment form for a specific worker
+router.get('/appointment/:workerId', async (req, res) => {
+  const { workerId } = req.params; // Get the workerId from the URL parameter
+
+  try {
+    // Fetch the worker's details from the database using workerId
+    const worker = await WorkerDetails.findById(workerId);
+    if (!worker) {
+      return res.status(404).send('Worker not found');
+    }
+
+    // Render the appointment form and pass the worker details
+    res.render('appointmentForm', { worker });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching worker details');
+  }
+});
+
+// Inside workerAuth.js (or the file where you handle appointment creation)
+router.post('/appointment/:workerId', async (req, res) => {
+    const { workerId } = req.params;
+    const { address, date, appointmentTime, phoneNumber, message, email, name } = req.body;
+  
+    // Log the appointment data before saving it
+    console.log('Saving new appointment:', {
+      workerId,
+      name,
+      address,
+      date,
+      appointmentTime,
+      phoneNumber,
+      message,
+      email
+    });
   
     try {
-      // Query the database to get workers with the matching category
-      const workersInCategory = await WorkerDetails.find({ category: categoryName });
+      const newAppointment = new Appointment({
+        workerId: workerId, // Ensure workerId is passed as ObjectId
+        name,
+        address,
+        date,
+        appointmentTime,
+        phoneNumber,
+        message,
+        email
+      });
   
-      // Render the explore categories page and pass the filtered workers and category name
-      res.render('exploreCategories', { categoryName, workersInCategory });
+      await newAppointment.save();
+  
+      res.redirect('/user/dashboard');  // Redirect after saving
     } catch (error) {
       console.error(error);
-      res.status(500).send('Error retrieving workers for this category');
+      res.status(500).send('Error submitting the appointment');
     }
   });
   
+
+  router.get('/appointments', async (req, res) => {
+    console.log('Fetching all appointments'); // Debug log to indicate fetching all appointments
+    
+    try {
+        // Fetch all appointments (without filtering by workerId)
+        const appointments = await Appointment.find().exec();
+        console.log('Appointments:', appointments); // Debug log to check if appointments are fetched
+        
+        // Render the appointments page and pass the appointments data
+        res.render('workerDetailsForm', { appointments });  // Pass appointments data here
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error fetching appointments');
+    }
+});
+
+
+// Render worker dashboard and fetch appointments
+router.get('/dashboard', isAuthenticated, async (req, res) => {
+  const workerId = req.session.workerId; // Get workerId from session
+
+  try {
+    // Fetch appointments for the logged-in worker
+    const appointments = await Appointment.find({ workerId }).populate('workerId', 'name'); // Optionally populate worker data like 'name'
+
+    // Render the worker dashboard with appointment data
+    res.render('workerDetailsDashboard', { appointments });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching appointments');
+  }
+});
 
 module.exports = router;

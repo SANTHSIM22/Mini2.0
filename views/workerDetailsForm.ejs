@@ -1,10 +1,22 @@
-<!-- workerDetailsForm.ejs -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Worker Details Form</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table, th, td {
+      border: 1px solid black;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+  </style>
 </head>
 <body>
   <h1>Add Details for Your Service</h1>
@@ -31,5 +43,42 @@
 
     <button type="submit">Submit</button>
   </form>
+
+  <h1>Appointment Details</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Address</th>
+        <th>Date</th>
+        <th>Appointment Time</th>
+        <th>Phone Number</th>
+        <th>Email</th>
+        <th>Message</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (appointments && appointments.length > 0) { %>
+        <% appointments.forEach(appointment => { %>
+          <tr>
+            <td><%= appointment.name %></td>
+            <td><%= appointment.address %></td>
+            <td><%= appointment.date.toISOString().split('T')[0] %></td> <!-- Format Date -->
+            <td><%= appointment.appointmentTime %></td>
+            <td><%= appointment.phoneNumber %></td>
+            <td><%= appointment.email %></td>
+            <td><%= appointment.message || 'N/A' %></td> <!-- Handle message being optional -->
+          </tr>
+        <% }); %>
+      <% } else { %>
+        <tr>
+          <td colspan="7">No appointments available.</td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+  
+  
+
 </body>
 </html>
